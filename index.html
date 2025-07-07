@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Translation Key Generator for The Stardew Squad</title>
+    <style>
+      body {
+        background-color: #20252c;
+        color: lightgray;
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 1rem;
+      }
+      .container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+      .control-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      label,
+      .static-text {
+        font-size: 1.1rem;
+      }
+      input,
+      select {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #555;
+        background-color: #333;
+        color: lightgray;
+        font-size: 1rem;
+      }
+      input[type="number"] {
+        width: 50px;
+      }
+      .spouse-container {
+        margin-bottom: 1.5rem;
+      }
+      .result-container {
+        margin-top: 1rem;
+        padding: 1rem 1.5rem;
+        background-color: #1a1e24;
+        border: 1px solid #444;
+        border-radius: 8px;
+        min-width: 50%;
+        text-align: center;
+      }
+      .key-display-area {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      #resultKey {
+        font-family: monospace;
+        font-size: 1.2rem;
+        color: #7fdbff;
+        word-break: break-all;
+        text-align: left;
+      }
+      #copyButton {
+        padding: 8px 12px;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: 1px solid #666;
+        background-color: #444;
+        color: lightgray;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        white-space: nowrap;
+      }
+      #copyButton:hover {
+        background-color: #555;
+      }
+      #copyButton:active {
+        background-color: #666;
+      }
+      .footer-content {
+        margin-top: 2rem;
+        text-align: center;
+        max-width: 700px;
+      }
+      .footer-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid #444;
+      }
+      .footer-content p {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        color: #ccc;
+      }
+      .footer-content a {
+        color: #87ceeb; /* Sky Blue */
+        text-decoration: none;
+      }
+      .footer-content a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Translation Key Generator for The Stardew Squad</h1>
+
+    <div class="container">
+      <div class="control-group">
+        <span class="static-text">dialogue.</span>
+        <select id="action">
+          <option value="idle">idle</option>
+          <option value="attacking">attacking</option>
+          <option value="watering">watering</option>
+          <option value="lumbering">lumbering</option>
+          <option value="recruit">recruit</option>
+          <option value="dismiss">dismiss</option>
+        </select>
+        <span class="static-text">.</span>
+      </div>
+      <div class="control-group">
+        <input type="text" id="npcName" placeholder="Abigail" />
+        <span class="static-text">.</span>
+      </div>
+      <div id="locationContainer" class="control-group">
+        <select id="location"></select>
+        <span class="static-text">.</span>
+      </div>
+      <div class="control-group">
+        <input type="number" id="number" value="1" min="1" />
+      </div>
+    </div>
+
+    <div class="spouse-container">
+      <label>
+        <input type="checkbox" id="isSpouse" />
+        Is Spouse?
+      </label>
+    </div>
+
+    <div class="result-container">
+      <h3>Generated Key:</h3>
+      <div class="key-display-area">
+        <p id="resultKey"></p>
+        <button id="copyButton">Copy</button>
+      </div>
+    </div>
+
+    <div class="footer-content">
+      <p>
+        The NPC name should be their unique name, not their DisplayName!
+        <br /><br />
+        Find a list of some available location names here:
+        <a
+          href="https://stardewvalleywiki.com/Modding:Location_data#Location_names"
+          target="_blank"
+          rel="noopener noreferrer"
+          >https://stardewvalleywiki.com/Modding:Location_data#Location_names</a
+        >
+        <br />
+        (Use MineShaft for the mines, be it the normal or desert ones!)
+        <br /><br />
+        Always finish your translation keys with a number, starting by 1! The
+        mod will randomly pick a line from the numbered keys.
+      </p>
+    </div>
+
+    <script>
+      const locationNames = [
+        "generic",
+        "MineShaft",
+        "VolcanoDungeon",
+        "Farm",
+        "FarmHouse",
+        "FarmCave",
+        "Town",
+        "JoshHouse",
+        "HaleyHouse",
+        "SamHouse",
+        "Blacksmith",
+        "ManorHouse",
+        "SeedShop",
+        "Saloon",
+        "Trailer",
+        "Hospital",
+        "HarveyRoom",
+        "Beach",
+        "ElliottHouse",
+        "Mountain",
+        "ScienceHouse",
+        "SebastianRoom",
+        "Tent",
+        "Forest",
+        "WizardHouse",
+        "AnimalShop",
+        "LeahHouse",
+        "BusStop",
+        "Mine",
+        "Sewer",
+        "BugLand",
+        "Desert",
+        "Club",
+        "SandyHouse",
+        "ArchaeologyHouse",
+        "WizardHouseBasement",
+        "AdventureGuild",
+        "Woods",
+        "Railroad",
+        "WitchSwamp",
+        "WitchHut",
+        "WitchWarpCave",
+        "Summit",
+        "FishShop",
+        "BathHouse_Entry",
+        "BathHouse_MensLocker",
+        "BathHouse_WomensLocker",
+        "BathHouse_Pool",
+        "CommunityCenter",
+        "JojaMart",
+        "Greenhouse",
+        "SkullCave",
+        "Backwoods",
+        "Tunnel",
+        "Trailer_Big",
+        "Cellar",
+        "Cellar2",
+        "Cellar3",
+        "Cellar4",
+        "BeachNightMarket",
+        "MermaidHouse",
+        "Submarine",
+        "AbandonedJojaMart",
+        "MovieTheater",
+        "Sunroom",
+        "BoatTunnel",
+        "IslandSouth",
+        "IslandSouthEast",
+        "IslandSouthEastCave",
+        "IslandEast",
+        "IslandWest",
+        "IslandNorth",
+        "IslandHut",
+        "IslandWestCave1",
+        "IslandNorthCave1",
+        "IslandFieldOffice",
+        "IslandFarmHouse",
+        "CaptainRoom",
+        "IslandShrine",
+        "IslandFarmCave",
+        "Caldera",
+        "LeoTreeHouse",
+        "QiNutRoom",
+      ]
+
+      const actionSelect = document.getElementById("action")
+      const npcNameInput = document.getElementById("npcName")
+      const locationSelect = document.getElementById("location")
+      const locationContainer = document.getElementById("locationContainer")
+      const numberInput = document.getElementById("number")
+      const isSpouseCheckbox = document.getElementById("isSpouse")
+      const resultKeyP = document.getElementById("resultKey")
+      const copyButton = document.getElementById("copyButton")
+      let copyTimeout = null
+
+      function populateLocations() {
+        locationNames.sort().forEach((name) => {
+          const option = document.createElement("option")
+          option.value = name
+          option.textContent = name
+          locationSelect.appendChild(option)
+        })
+        locationSelect.value = "generic"
+      }
+
+      function toggleLocationVisibility() {
+        const action = actionSelect.value
+        if (action === "recruit" || action === "dismiss") {
+          locationContainer.style.display = "none"
+        } else {
+          locationContainer.style.display = "flex"
+        }
+      }
+
+      function generateKey() {
+        const action = actionSelect.value
+        const isSpouse = isSpouseCheckbox.checked
+        const npcName = npcNameInput.value.trim() || "generic"
+        const number = numberInput.value
+
+        let key = "dialogue."
+        key += action
+
+        if (isSpouse) {
+          key += ".spouse"
+        }
+
+        key += `.${npcName}`
+
+        // Conditionally add the location based on the action
+        if (action !== "recruit" && action !== "dismiss") {
+          const location = locationSelect.value
+          key += `.${location}`
+        }
+
+        key += `.${number}`
+
+        resultKeyP.textContent = key
+      }
+
+      function handleCopyClick() {
+        const keyToCopy = resultKeyP.textContent
+        navigator.clipboard
+          .writeText(keyToCopy)
+          .then(() => {
+            copyButton.textContent = "Copied!"
+            if (copyTimeout) clearTimeout(copyTimeout)
+            copyTimeout = setTimeout(() => {
+              copyButton.textContent = "Copy"
+            }, 2000)
+          })
+          .catch((err) => {
+            console.error("Failed to copy text: ", err)
+          })
+      }
+
+      function setupEventListeners() {
+        actionSelect.addEventListener("change", () => {
+          generateKey()
+          toggleLocationVisibility()
+        })
+        npcNameInput.addEventListener("input", generateKey)
+        locationSelect.addEventListener("change", generateKey)
+        numberInput.addEventListener("input", generateKey)
+        isSpouseCheckbox.addEventListener("change", generateKey)
+        copyButton.addEventListener("click", handleCopyClick)
+      }
+
+      // --- Initial Setup ---
+      populateLocations()
+      setupEventListeners()
+      toggleLocationVisibility()
+      generateKey()
+    </script>
+  </body>
+</html>
