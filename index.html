@@ -136,6 +136,13 @@
         <span class="static-text">.</span>
       </div>
       <div class="control-group">
+        <select id="timeContext">
+          <option value="day">day</option>
+          <option value="night">night</option>
+        </select>
+        <span class="static-text">.</span>
+      </div>
+      <div class="control-group">
         <input type="number" id="number" value="1" min="1" />
       </div>
     </div>
@@ -168,6 +175,8 @@
         >
         <br />
         (Use MineShaft for the mines, be it the normal or desert ones!)
+        <br /><br />
+        "night" means the dialogue will be displayed at or after 10pm.
         <br /><br />
         Always finish your translation keys with a number, starting by 1! The
         mod will randomly pick a line from the numbered keys.
@@ -265,6 +274,7 @@
       const npcNameInput = document.getElementById("npcName")
       const locationSelect = document.getElementById("location")
       const locationContainer = document.getElementById("locationContainer")
+      const timeContextSelect = document.getElementById("timeContext")
       const numberInput = document.getElementById("number")
       const isSpouseCheckbox = document.getElementById("isSpouse")
       const resultKeyP = document.getElementById("resultKey")
@@ -294,6 +304,7 @@
         const action = actionSelect.value
         const isSpouse = isSpouseCheckbox.checked
         const npcName = npcNameInput.value.trim() || "generic"
+        const timeContext = timeContextSelect.value
         const number = numberInput.value
 
         let key = "dialogue."
@@ -305,12 +316,12 @@
 
         key += `.${npcName}`
 
-        // Conditionally add the location based on the action
         if (action !== "recruit" && action !== "dismiss") {
           const location = locationSelect.value
           key += `.${location}`
         }
 
+        key += `.${timeContext}`
         key += `.${number}`
 
         resultKeyP.textContent = key
@@ -339,6 +350,7 @@
         })
         npcNameInput.addEventListener("input", generateKey)
         locationSelect.addEventListener("change", generateKey)
+        timeContextSelect.addEventListener("change", generateKey)
         numberInput.addEventListener("input", generateKey)
         isSpouseCheckbox.addEventListener("change", generateKey)
         copyButton.addEventListener("click", handleCopyClick)
